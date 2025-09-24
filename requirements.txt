@@ -1,0 +1,9 @@
+pandas
+cairosvg
+python-dotenv
+python-docx
+openai
+pyqt6-sip
+pyqt6
+openpyxl
+pdfplumber
