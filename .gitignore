@@ -1,0 +1,96 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtualenvs
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+.virtualenv/
+
+# Environment variables files
+.env
+.env.*
+!.env.example
+
+# Packaging / distribution
+.build/
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+wheels/
+share/python-wheels/
+MANIFEST
+.python-version
+.installed.cfg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.tox/
+.nox/
+cover/
+
+# Lint/Type-check caches
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter/IPython
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# Sphinx docs
+docs/_build/
+
+# Scrapy
+.scrapy/
+
+# Flask/Django common
+instance/
+.webassets-cache
+
+# PyBuilder
+.pybuilder/
+target/
+
+# PDM
+__pypackages__/
+
+# MkDocs
+site/
+
+# Logs
+*.log
+logs/
