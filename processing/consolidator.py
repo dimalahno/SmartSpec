@@ -18,7 +18,7 @@ class TableConsolidator:
         """
         for col in df.columns:
             if col not in ["№", "Требуемое кол-во, в ед. изм."]:
-                df[col] = df[col].astype(str).str.strip().str.lower()
+                df[col] = df[col].astype(str).str.strip()
         return df
 
     def consolidate(self, df: pd.DataFrame) -> pd.DataFrame:
