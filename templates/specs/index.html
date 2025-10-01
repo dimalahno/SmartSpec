@@ -1,0 +1,28 @@
+{% extends 'specs/base.html' %}
+{% block content %}
+<div class="text-center mb-4">
+    <h2 class="mb-3">SmartSpec</h2>
+    <p class="text-muted">Загрузите файл спецификации в формате DOCX</p>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm mb-3">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Выберите файл</label>
+        <input type="file" name="specfile" class="form-control" accept=".docx" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Загрузить</button>
+</form>
+
+{% if message %}
+<div class="alert alert-info">
+    {{ message }}
+</div>
+{% endif %}
+
+{% if result_file_url %}
+<div class="alert alert-success">
+    <a href="{{ result_file_url }}" download>Скачать результат</a>
+</div>
+{% endif %}
+{% endblock %}
