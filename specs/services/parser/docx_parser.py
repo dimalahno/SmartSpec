@@ -1,6 +1,8 @@
 import os
 from docx import Document
 from specs.services.ai.ai_helper import AIHelper
+from specs.services.processing import consolidator
+from specs.services.processing.file_service import save_final_dataframe
 from specs.services.utils.emf_converter import emf_to_png
 
 
@@ -85,3 +87,30 @@ class DocxParser:
             saved_files.append(output_path)
 
         return saved_files
+
+def main():
+    # docx_file = '../../../data/docx/test_small.docx'
+    # docx_file = '../../../data/docx/33290 Оснастка Авиастар.docx'
+    # docx_file = '../../../data/docx/инструмент для токарного станка.docx'
+    docx_file = '../../../data/docx/test.docx'
+
+    parser = DocxParser(docx_file)
+
+    # 1. Сначала пробуем таблицы
+    tables = parser.parse_tables()
+
+    # 2. Если таблиц нет → GPT по картинкам
+    if not tables:
+        tables = parser.parse_images_with_gpt()
+
+    # 3. Новый пайплайн: сразу обрабатываем внутри consolidator
+    df = consolidator.merge_and_consolidate(tables)
+
+    # 4. Сохраняем результат
+    base_name = os.path.splitext(os.path.basename(docx_file))[0]  # например "test_small"
+    output_path = save_final_dataframe(df, f"../../../data_output/doc/{base_name}_consolidated.csv")
+
+    print(f"Файл с объединёнными таблицами: {output_path}")
+
+if __name__ == "__main__":
+    main()
