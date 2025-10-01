@@ -1,9 +1,9 @@
 import sys
+
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
-    QPushButton, QLabel, QListWidget, QFileDialog, QRadioButton, QButtonGroup
+    QPushButton, QListWidget, QFileDialog, QRadioButton, QButtonGroup
 )
-from PyQt6.QtCore import Qt
 
 
 class MainWindow(QMainWindow):
@@ -18,13 +18,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         layout = QVBoxLayout()
-
-        # Зона для Drag & Drop
-        self.drop_label = QLabel("Перетащите сюда файлы\nили используйте кнопку ниже")
-        self.drop_label.setStyleSheet("border: 2px dashed #aaa; padding: 20px;")
-        self.drop_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.drop_label.setAcceptDrops(True)
-        layout.addWidget(self.drop_label)
 
         # Список файлов
         self.file_list = QListWidget()

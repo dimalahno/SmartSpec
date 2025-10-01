@@ -25,6 +25,17 @@ class DocxParser:
         return results
 
     def extract_images(self, output_dir="extracted_images"):
+        """
+        Извлекает все изображения из docx документа и сохраняет их в указанную директорию.
+        Автоматически конвертирует EMF файлы в PNG формат.
+
+        Args:
+            output_dir (str): Путь к директории для сохранения изображений. По умолчанию "extracted_images"
+
+        Returns:
+            list: Список путей к сохраненным изображениям
+        """
+
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
@@ -44,6 +55,7 @@ class DocxParser:
                 images.append(filename)
         return images
 
+
     def parse_images_with_gpt(self, output_dir="extracted_images"):
         """
         Извлекает таблицы с картинок через GPT и приводит их к шаблону (CSV).
@@ -54,6 +66,7 @@ class DocxParser:
             table_csv = self.ai.extract_table_from_image(img)
             results.append(table_csv)
         return results
+
 
     def save_results_to_csv(self, results, output_dir="output"):
         """
