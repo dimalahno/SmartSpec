@@ -1,7 +1,7 @@
 import os
 from docx import Document
-from ai.ai_helper import AIHelper
-from utils.emf_converter import emf_to_png
+from specs.services.ai.ai_helper import AIHelper
+from specs.services.utils.emf_converter import emf_to_png
 
 
 class DocxParser:

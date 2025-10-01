@@ -1,5 +1,6 @@
-from parser.docx_parser import DocxParser
-from processing.consolidator import TableConsolidator
+from specs.services.parser.docx_parser import DocxParser
+from specs.services.processing import consolidator
+from specs.services.processing import load_and_merge, normalize_text, save_to_csv
 
 # docx_file = '../data/docx/test_small.docx'
 docx_file = '../data/docx/test.docx'
@@ -18,11 +19,10 @@ if not tables:
 csv_files = parser.save_results_to_csv(tables)
 
 # объединяем и убираем дубли
-consolidator = TableConsolidator()
-df = consolidator.load_and_merge(csv_files)
-df = consolidator.normalize_text(df)
+df = load_and_merge(csv_files)
+df = normalize_text(df)
 df = consolidator.consolidate(df)
 
 # сохраняем результат
-output_path = consolidator.save_to_csv(df, "output/consolidated.csv")
+output_path = save_to_csv(df, "../data_output/doc/consolidated.csv")
 print(f"Файл с объединёнными таблицами: {output_path}")

@@ -1,11 +1,11 @@
 import pandas as pd
 from pathlib import Path
 
-from ai.ai_helper import AIHelper
+from specs.services.ai.ai_helper import AIHelper
 
 ai = AIHelper()
 
-INPUT_FILE = Path("../data/xlsx/005_Спецификация инструмент для АПТ_001.xlsx")
+INPUT_FILE = Path("../../../data/xlsx/005_Спецификация инструмент для АПТ_001.xlsx")
 # INPUT_FILE = Path("../data/xlsx/36528 зз для 5565 ред. 10.01.2024.xls")
 # INPUT_FILE = Path("../data/xlsx/36881 ЗЦ оснастка сандвик.xlsx")
 # INPUT_FILE = Path("../data/xlsx/36897 ЗЦ оснастка для ВФ3.xlsx")
@@ -14,7 +14,7 @@ INPUT_FILE = Path("../data/xlsx/005_Спецификация инструмен�
 # INPUT_FILE = Path("../data/xlsx/41318 ЗЦ Токарный с КШ 6202.xlsx")
 # INPUT_FILE = Path("../data/xlsx/test.xlsx")
 # INPUT_FILE = Path("../data/xlsx/Заявка_5565_02.07.25 .xlsx")
-OUTPUT_DIR = Path("../data_output/xlsx")
+OUTPUT_DIR = Path("../../../data_output/xlsx")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def find_header_row(df):
@@ -88,10 +88,6 @@ def process_sheet(sheet_name):
         f.write(normalized_csv)
 
     print(f"✅ GPT-normalized saved: {out_path}")
-    #
-    # out_path = OUTPUT_DIR / f"{INPUT_FILE.stem}__{sheet_name}.csv"
-    # table.to_csv(out_path, index=False, encoding="utf-8-sig")
-    # print(f"✅ Saved: {out_path}")
 
 def main():
     xls = pd.ExcelFile(INPUT_FILE)
