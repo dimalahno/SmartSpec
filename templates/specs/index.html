@@ -1,28 +1,33 @@
 {% extends 'specs/base.html' %}
 {% block content %}
-<div class="text-center mb-4">
-    <h2 class="mb-3">SmartSpec</h2>
-    <p class="text-muted">Загрузите файл спецификации в формате DOCX</p>
-</div>
+  <div class="text-center mb-4">
+    <h2>SmartSpec</h2>
+  </div>
 
-<form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm mb-3">
+  <form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm mb-3">
     {% csrf_token %}
     <div class="mb-3">
-        <label class="form-label">Выберите файл</label>
-        <input type="file" name="specfile" class="form-control" accept=".docx" required>
+      <label class="form-label">Загрузите DOCX</label>
+      <input type="file" name="specfile" class="form-control" accept=".docx" required>
     </div>
-    <button type="submit" class="btn btn-primary">Загрузить</button>
-</form>
+    <button type="submit" class="btn btn-primary">Обработать</button>
+  </form>
 
-{% if message %}
-<div class="alert alert-info">
-    {{ message }}
-</div>
-{% endif %}
+  {% if message %}
+    <div class="alert alert-info">{{ message }}</div>
+  {% endif %}
 
-{% if result_file_url %}
-<div class="alert alert-success">
-    <a href="{{ result_file_url }}" download>Скачать результат</a>
-</div>
-{% endif %}
+  {% if table_html %}
+    <div class="card p-3 shadow-sm mb-3">
+      <h4>Результат обработки</h4>
+      <div class="table-responsive">
+        {{ table_html|safe }}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if result_file_url %}
+    <a href="{{ result_file_url }}" class="btn btn-success" download>Скачать</a>
+  {% endif %}
+
 {% endblock %}
