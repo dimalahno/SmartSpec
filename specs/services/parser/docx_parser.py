@@ -91,8 +91,8 @@ class DocxParser:
 def main():
     # docx_file = '../../../data/docx/test_small.docx'
     # docx_file = '../../../data/docx/33290 Оснастка Авиастар.docx'
-    # docx_file = '../../../data/docx/инструмент для токарного станка.docx'
-    docx_file = '../../../data/docx/test.docx'
+    docx_file = '../../../data/docx/инструмент для токарного станка.docx'
+    # docx_file = '../../../data/docx/test.docx'
 
     parser = DocxParser(docx_file)
 
@@ -112,5 +112,5 @@ def main():
 
     print(f"Файл с объединёнными таблицами: {output_path}")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

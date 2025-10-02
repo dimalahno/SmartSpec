@@ -19,7 +19,9 @@ SYSTEM_PROMPT: str = (
         4) Ед. изм.  
         5) Требуемое кол-во, в ед. изм.  
         6) Техническое задание
-        Если какое-то поле отсутствует — оставь его пустым, но разделители `;` всё равно должны быть на своём месте. Запрещено сокращать количество колонок или менять порядок.
+        Если какое-то поле отсутствует — оставь его пустым, но разделители `;` всё равно должны быть на своём месте. 
+        Запрещено сокращать количество колонок или менять порядок.
+        Запрещено увеличивать количество колонок.
         Правила обработки данных:        
         1. Новая позиция начинается только если строка начинается с номера (например, `2.26.` или `3.25.`). Всё, что идёт после номера и до первой запятой или тире — это "Наименование".        
         2. Если после строки с номером идут дополнительные строки **без номера** (например, начинающиеся с текста или характеристик), и у них нет собственного количества — считать их *продолжением предыдущей позиции*. Такие строки добавляются в поле "Техническое задание" предыдущей позиции, соединяясь через запятую.        
@@ -35,12 +37,13 @@ SYSTEM_PROMPT: str = (
     )
 
 class AIHelper:
-    def __init__(self):
+    def __init__(self, model: str = "gpt-4.1-mini"):
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OPENAI_API_KEY не найден. Проверьте .env файл.")
         self.client = OpenAI(api_key=api_key)
         self.system_prompt = SYSTEM_PROMPT
+        self.model = model
 
     def extract_table_from_image(self, image_path: str) -> str:
         """
@@ -51,7 +54,7 @@ class AIHelper:
             image_b64 = base64.b64encode(img_file.read()).decode("utf-8")
 
         response = self.client.responses.create(
-            model="gpt-4.1-mini",
+            model=self.model,
             input=[
                 {
                     "role": "system",
@@ -88,7 +91,7 @@ class AIHelper:
         table_text = "\n".join([";".join(row) for row in table])
 
         response = self.client.responses.create(
-            model="gpt-4.1-mini",
+            model=self.model,
             input=[
                 {
                     "role": "system",
@@ -120,7 +123,7 @@ class AIHelper:
         №;Обозначение;Наименование;Ед. изм.;Требуемое кол-во, в ед. изм.;Техническое задание
         """
         response = self.client.responses.create(
-            model="gpt-4.1-mini",
+            model=self.model,
             input=[
                 {
                     "role": "system",
@@ -138,6 +141,33 @@ class AIHelper:
                             "type": "input_text",
                             "text": f"Вот сырой CSV: {csv_text}. Приведи данные к указанному шаблону."
                         }
+                    ]
+                }
+            ]
+        )
+        return response.output_text
+
+    def extract_table_from_image_b64(self, image_b64: str) -> str:
+        """
+        Принимает чистую base64-строку (без 'data:image') и отправляет в GPT.
+        Возвращает CSV в нужном шаблоне.
+        """
+        response = self.client.responses.create(
+            model=self.model,
+            input=[
+                {
+                    "role": "system",
+                    "content": [
+                        {"type": "input_text", "text": self.system_prompt}
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "input_text",
+                         "text": "Распознай таблицу с этого изображения и приведи её к указанному шаблону."},
+                        {"type": "input_image",
+                         "image_url": f"data:image/png;base64,{image_b64}"}
                     ]
                 }
             ]
