@@ -5,18 +5,6 @@ from specs.services.ai.ai_helper import AIHelper
 
 ai = AIHelper()
 
-INPUT_FILE = Path("../../../data/xlsx/005_Спецификация инструмент для АПТ_001.xlsx")
-# INPUT_FILE = Path("../data/xlsx/36528 зз для 5565 ред. 10.01.2024.xls")
-# INPUT_FILE = Path("../data/xlsx/36881 ЗЦ оснастка сандвик.xlsx")
-# INPUT_FILE = Path("../data/xlsx/36897 ЗЦ оснастка для ВФ3.xlsx")
-# INPUT_FILE = Path("../data/xlsx/39236 оснастка для грс.xlsx")
-# INPUT_FILE = Path("../data/xlsx/40323 зц на инструмент ТФ5 7854.xlsx")
-# INPUT_FILE = Path("../data/xlsx/41318 ЗЦ Токарный с КШ 6202.xlsx")
-# INPUT_FILE = Path("../data/xlsx/test.xlsx")
-# INPUT_FILE = Path("../data/xlsx/Заявка_5565_02.07.25 .xlsx")
-OUTPUT_DIR = Path("../../../data_output/xlsx")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 def find_header_row(df):
     """
     Ищем строку, которая похожа на заголовок.
@@ -89,10 +77,21 @@ def process_sheet(sheet_name):
 
     print(f"✅ GPT-normalized saved: {out_path}")
 
-def main():
-    xls = pd.ExcelFile(INPUT_FILE)
-    for sheet in xls.sheet_names:
-        process_sheet(sheet)
-
-if __name__ == "__main__":
-    main()
+INPUT_FILE = Path("../../../data/xlsx/005_Спецификация инструмент для АПТ_001.xlsx")
+# INPUT_FILE = Path("../data/xlsx/36528 зз для 5565 ред. 10.01.2024.xls")
+# INPUT_FILE = Path("../data/xlsx/36881 ЗЦ оснастка сандвик.xlsx")
+# INPUT_FILE = Path("../data/xlsx/36897 ЗЦ оснастка для ВФ3.xlsx")
+# INPUT_FILE = Path("../data/xlsx/39236 оснастка для грс.xlsx")
+# INPUT_FILE = Path("../data/xlsx/40323 зц на инструмент ТФ5 7854.xlsx")
+# INPUT_FILE = Path("../data/xlsx/41318 ЗЦ Токарный с КШ 6202.xlsx")
+# INPUT_FILE = Path("../data/xlsx/test.xlsx")
+# INPUT_FILE = Path("../data/xlsx/Заявка_5565_02.07.25 .xlsx")
+OUTPUT_DIR = Path("../../../data_output/xlsx")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+# def main():
+#     xls = pd.ExcelFile(INPUT_FILE)
+#     for sheet in xls.sheet_names:
+#         process_sheet(sheet)
+#
+# if __name__ == "__main__":
+#     main()

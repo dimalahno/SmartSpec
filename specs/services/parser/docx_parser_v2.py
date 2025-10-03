@@ -1,10 +1,12 @@
 import base64
+import logging
 import os
 
 from docx import Document
 from wand.image import Image as WandImage
 from specs.services.ai.ai_helper import AIHelper
 
+logger = logging.getLogger(__name__)
 
 class DocxParserV2:
     def __init__(self, path: str, ai_helper: AIHelper = None):
@@ -44,7 +46,7 @@ class DocxParserV2:
                         img.format = "png"
                         img_bytes = img.make_blob()
                 except Exception as e:
-                    print(f"[WARNING] Не удалось конвертировать EMF {rel.target_ref}: {e}")
+                    logger.info(f"[WARNING] Не удалось конвертировать EMF {rel.target_ref}: {e}")
                     continue
 
             # base64
@@ -87,7 +89,7 @@ class DocxParserV2:
         # Если нет текстовых таблиц — пробуем изображения
         images_b64 = self.extract_images_as_base64()
         if not images_b64:
-            print("[INFO] Таблицы и изображения не найдены.")
+            logger.info("[INFO] Таблицы и изображения не найдены.")
             return []
 
         return self.normalize_images(images_b64)
@@ -100,4 +102,4 @@ class DocxParserV2:
 #     csv_tables = parser.parse_all()
 #
 #     for i, csv in enumerate(csv_tables, 1):
-#         print(f"--- Table {i} ---\n{csv}\n")
+#         logger.info(f"--- Table {i} ---\n{csv}\n")
