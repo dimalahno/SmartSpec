@@ -3,8 +3,8 @@ import os
 from django.conf import settings
 from django.shortcuts import render
 
-from specs.services.parser.docx_parser_v2 import DocxParserV2
-from specs.services.parser.excel_parser_v2 import ExcelParserV2
+from specs.services.parser.docx_parser import DocxParser
+from specs.services.parser.excel_parser import ExcelParser
 from specs.services.processing.consolidator_v2 import ConsolidatorV2
 from specs.services.processing.file_service import save_final_dataframe_xlsx
 
@@ -32,11 +32,11 @@ def index(request):
             ext = os.path.splitext(file_path)[1].lower()
 
             if ext == ".docx":
-                parser = DocxParserV2(file_path)
+                parser = DocxParser(file_path)
                 csv_tables = parser.parse_all()
 
             elif ext in [".xls", ".xlsx"]:
-                parser = ExcelParserV2(file_path)
+                parser = ExcelParser(file_path)
                 merged_csv = parser.parse_all_sheets()
                 csv_tables = [merged_csv] if merged_csv else []
 

@@ -9,7 +9,7 @@ from specs.services.ai.ai_helper import AIHelper
 
 logger = logging.getLogger(__name__)
 
-class DocxParserV2:
+class DocxParser:
     def __init__(self, path: str, ai_helper: Optional[AIHelper] = None):
         self.path = path
         self.doc = Document(path)
