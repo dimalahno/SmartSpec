@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from io import StringIO
 
@@ -12,7 +13,6 @@ class ConsolidatorV2:
     """
 
     HEADERS = {
-        "number": "№",
         "designation": "Обозначение",
         "name": "Наименование",
         "unit": "Ед. изм.",
@@ -48,15 +48,15 @@ class ConsolidatorV2:
         Чистит текст в строковых колонках.
         """
         for col in df.columns:
-            if col not in [self.HEADERS["number"], self.HEADERS["quantity"]]:
+            if col not in [self.HEADERS["quantity"]]:
                 df[col] = df[col].astype(str).str.strip()
+        df = df.replace({np.nan: "", "nan": "", "None": ""})
         return df
 
     def _consolidate(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Группирует по ключевым колонкам и суммирует количество.
         """
-        df[self.HEADERS["number"]] = pd.to_numeric(df[self.HEADERS["number"]], errors="coerce")
         df[self.HEADERS["quantity"]] = pd.to_numeric(
             df[self.HEADERS["quantity"]], errors="coerce"
         ).fillna(0)
@@ -64,7 +64,6 @@ class ConsolidatorV2:
         consolidated = (
             df.groupby(self.KEY_COLUMNS, as_index=False)
             .agg({
-                self.HEADERS["number"]: "first",  # берем первый номер как референс
                 self.HEADERS["quantity"]: "sum",
                 self.HEADERS["tech_spec"]: lambda x: " | ".join(
                     sorted(set(map(str, x)))
@@ -72,12 +71,8 @@ class ConsolidatorV2:
             })
         )
 
-        # Сортировка по номеру
-        consolidated = consolidated.sort_values(by=self.HEADERS["number"], ascending=True, na_position="last")
-
         # Переставляем колонки в нужном порядке
         ordered_columns = [
-            self.HEADERS["number"],
             self.HEADERS["designation"],
             self.HEADERS["name"],
             self.HEADERS["unit"],
@@ -94,8 +89,5 @@ class ConsolidatorV2:
         """
         df = self._load_tables(csv_tables)
         df = self._normalize_text(df)
-        df = self._consolidate(df)
-
-        # Убираем NaN после всех трансформаций
-        df = df.fillna("")
+        # df = self._consolidate(df)
         return df
