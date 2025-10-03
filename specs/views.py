@@ -4,11 +4,13 @@ from django.conf import settings
 from django.shortcuts import render
 
 from specs.services.parser.docx_parser_v2 import DocxParserV2
+from specs.services.parser.excel_parser_v2 import ExcelParserV2
 from specs.services.processing.consolidator_v2 import ConsolidatorV2
 from specs.services.processing.file_service import save_final_dataframe_xlsx
 
 
 def index(request):
+    uploaded_file = None
     message = None
     result_file_url = None
     table_html = None
@@ -26,9 +28,20 @@ def index(request):
                 dest.write(chunk)
 
         try:
-            # 2. запускаем парсер
-            parser = DocxParserV2(file_path)
-            csv_tables = parser.parse_all()
+            # 2. Определяем тип файла и парсим
+            ext = os.path.splitext(file_path)[1].lower()
+
+            if ext == ".docx":
+                parser = DocxParserV2(file_path)
+                csv_tables = parser.parse_all()
+
+            elif ext in [".xls", ".xlsx"]:
+                parser = ExcelParserV2(file_path)
+                merged_csv = parser.parse_all_sheets()
+                csv_tables = [merged_csv] if merged_csv else []
+
+            else:
+                raise ValueError(f"Unsupported file type: {ext}")
 
             # 3. объединяем и сохраняем результат
             consolidator = ConsolidatorV2()
@@ -57,5 +70,6 @@ def index(request):
         'title': 'SmartSpec',
         'message': message,
         'result_file_url': result_file_url,
-        'table_html': table_html
+        'table_html': table_html,
+        'uploaded_filename': uploaded_file.name if request.FILES.get('specfile') else None
     })

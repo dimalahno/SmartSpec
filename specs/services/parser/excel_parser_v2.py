@@ -13,15 +13,12 @@ class ExcelParserV2:
     Парсер Excel-таблиц с постобработкой и нормализацией через AIHelper.
     """
 
-    def __init__(self, input_file: Path, output_dir: Path, ai_helper: Optional[AIHelper] = None):
-        self.input_file = Path(input_file)
-        self.output_dir = Path(output_dir)
+    def __init__(self, path: str, ai_helper: Optional[AIHelper] = None):
+        self.input_file = Path(path)
         self.ai = ai_helper or AIHelper()
 
         if not self.input_file.exists():
             raise FileNotFoundError(f"Excel file not found: {self.input_file}")
-        if not self.output_dir.exists():
-            self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def _find_header_row(self, df: pd.DataFrame) -> int:
         """

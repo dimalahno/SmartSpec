@@ -1,6 +1,7 @@
 import base64
 import logging
 import os
+from typing import Optional
 
 from docx import Document
 from wand.image import Image as WandImage
@@ -9,7 +10,7 @@ from specs.services.ai.ai_helper import AIHelper
 logger = logging.getLogger(__name__)
 
 class DocxParserV2:
-    def __init__(self, path: str, ai_helper: AIHelper = None):
+    def __init__(self, path: str, ai_helper: Optional[AIHelper] = None):
         self.path = path
         self.doc = Document(path)
         self.ai = ai_helper or AIHelper()
