@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from specs.services.parser.docx_parser import DocxParser
 from specs.services.parser.excel_parser import ExcelParser
+from specs.services.parser.txt_parser import TxtParser
 from specs.services.processing.consolidator_v2 import ConsolidatorV2
 from specs.services.processing.file_service import save_final_dataframe_xlsx
 
@@ -40,6 +41,9 @@ def index(request):
                 merged_csv = parser.parse_all_sheets()
                 csv_tables = [merged_csv] if merged_csv else []
 
+            elif ext == ".txt":
+                parser = TxtParser(file_path)
+                csv_tables = [parser.normalize()]
             else:
                 raise ValueError(f"Unsupported file type: {ext}")
 
@@ -47,7 +51,7 @@ def index(request):
             consolidator = ConsolidatorV2()
             df = consolidator.merge_and_consolidate(csv_tables)
 
-            # ✅ Генерируем HTML-таблицу
+            # Генерируем HTML-таблицу
             table_html = df.to_html(classes="table table-striped table-bordered", index=False)
 
             output_dir = os.path.join(settings.MEDIA_ROOT, "output")

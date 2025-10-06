@@ -4,7 +4,6 @@ from io import StringIO
 
 class ConsolidatorV2:
     """
-    Новая версия консолидатора:
     - Работает напрямую со списком CSV-строк (без промежуточных файлов)
     - Удаляет повторяющиеся заголовки
     - Консолидирует дубли по ключевым полям
@@ -27,12 +26,9 @@ class ConsolidatorV2:
     ]
 
     def _load_tables(self, csv_tables: list[str]) -> pd.DataFrame:
-        """
-        Загружает CSV-строки в общий DataFrame.
-        """
         dfs = []
         for csv_text in csv_tables:
-            df = pd.read_csv(StringIO(csv_text), sep=";")
+            df = pd.read_csv(StringIO(csv_text), sep=";", dtype=str, keep_default_na=False)
             dfs.append(df)
 
         combined = pd.concat(dfs, ignore_index=True)
