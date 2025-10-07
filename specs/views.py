@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from specs.services.parser.docx_parser import DocxParser
 from specs.services.parser.excel_parser import ExcelParser
+from specs.services.parser.pdf_parser import PDFParser
 from specs.services.parser.txt_parser import TxtParser
 from specs.services.processing.consolidator_v2 import ConsolidatorV2
 from specs.services.processing.file_service import save_final_dataframe_xlsx
@@ -44,6 +45,10 @@ def index(request):
             elif ext == ".txt":
                 parser = TxtParser(file_path)
                 csv_tables = [parser.normalize()]
+
+            elif ext == ".pdf":
+                parser = PDFParser(file_path)
+                csv_tables = [parser.parse()]
             else:
                 raise ValueError(f"Unsupported file type: {ext}")
 
