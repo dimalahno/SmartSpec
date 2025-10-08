@@ -36,16 +36,13 @@ def index(request):
             if ext == ".docx":
                 parser = DocxParser(file_path)
                 csv_tables = parser.parse_all()
-
             elif ext in [".xls", ".xlsx"]:
                 parser = ExcelParser(file_path)
                 merged_csv = parser.parse_all_sheets()
                 csv_tables = [merged_csv] if merged_csv else []
-
             elif ext == ".txt":
                 parser = TxtParser(file_path)
                 csv_tables = [parser.normalize()]
-
             elif ext == ".pdf":
                 parser = PDFParser(file_path)
                 csv_tables = [parser.parse()]
@@ -56,7 +53,7 @@ def index(request):
             consolidator = ConsolidatorV2()
             df = consolidator.merge_and_consolidate(csv_tables)
 
-            # Генерируем HTML-таблицу
+            # 4. Генерируем HTML-таблицу
             table_html = df.to_html(classes="table table-striped table-bordered", index=False)
 
             output_dir = os.path.join(settings.MEDIA_ROOT, "output")
@@ -66,7 +63,7 @@ def index(request):
             output_path = os.path.join(output_dir, f"{base_name}_consolidated.xlsx")
             save_final_dataframe_xlsx(df, output_path)
 
-            # 4. готовим ссылку для скачивания
+            # 5. Готовим ссылку для скачивания
             result_file_url = os.path.relpath(output_path, settings.MEDIA_ROOT)
             result_file_url = settings.MEDIA_URL + result_file_url.replace("\\", "/")
 
@@ -75,10 +72,17 @@ def index(request):
         except Exception as e:
             message = f"Ошибка при обработке: {str(e)}"
 
+    # При GET-запросе — ничего не передаём
+    elif request.method == 'GET':
+        uploaded_file = None
+        message = None
+        result_file_url = None
+        table_html = None
+
     return render(request, 'specs/index.html', {
         'title': 'SmartSpec',
         'message': message,
         'result_file_url': result_file_url,
         'table_html': table_html,
-        'uploaded_filename': uploaded_file.name if request.FILES.get('specfile') else None
+        'uploaded_filename': uploaded_file.name if uploaded_file else None
     })
