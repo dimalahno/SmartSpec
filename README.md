@@ -1,52 +1,70 @@
-# Структура проект
-# SmartSpec — Django skeleton
+# SmartSpec — каркас проекта на Django
 
-This is a minimal Django project skeleton to bootstrap the SmartSpec web service (HTML pages).
+Это минимальный каркас Django-проекта для запуска веб-сервиса **SmartSpec** (HTML-страницы).  
+Подходит для быстрого старта и локальной разработки.
 
-## Quick start
+---
 
-1. Create virtualenv and activate it
+## Быстрый старт
 
-Linux / macOS:
+### 1. Создайте и активируйте виртуальное окружение
 
-```bash
+**Linux / macOS:**
+```
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-Windows (PowerShell):
-
-```powershell
+**Windows (PowerShell):**
+```
 python -m venv venv
-venv\\Scripts\\Activate.ps1
+venv\Scripts\Activate
 ```
 
-2. Install required packages
-
-```bash
+### 2. Установите зависимости
+```
 pip install -r requirements.txt
 ```
 
-3. Run migrations and start development server
-
-```bash
+### 3. Выполните миграции и запустите сервер разработки
+```
 python manage.py migrate
 python manage.py runserver
 ```
 
-4. Установить ImageMagick 
-(Windows installer: https://imagemagick.org/script/download.php#windows).
-Настройка системного окружения PATH вручную
-Win+R → sysdm.cpl → вкладка «Дополнительно» → «Переменные среды».
-В «Системные переменные» найдите Path, нажмите «Изменить».
-Добавьте путь до папки с magick.exe, например:
-C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\
-Нажмите OK, закройте все окна, перезагрузите компьютер.
+После запуска откройте в браузере: http://127.0.0.1:8000/
 
+Вы должны увидеть приветственную страницу SmartSpec.
 
-Open http://127.0.0.1:8000/ in your browser — you should see the SmartSpec welcome page.
+### 4. Установка ImageMagick (для работы с изображениями)
 
-## Notes
-- Uses SQLite for quick local development (`db.sqlite3`).
-- The `specs/services/` package contains placeholders for your existing parser/processing/exporter/ai/utils modules — keep them pure Python (no Django) so they remain reusable.
-- Replace `SECRET_KEY` in `smartspec/settings.py` for production and set `DEBUG = False`.
+#### Linux / macOS
+
+Установите ImageMagick через пакетный менеджер вашей системы:
+
+**Ubuntu / Debian:**
+```
+sudo apt update
+sudo apt install imagemagick
+```
+
+#### MacOS (через Homebrew)
+```
+brew install imagemagick
+```
+
+#### Windows
+Скачайте установщик:
+https://imagemagick.org/script/download.php#windows
+После установки настройте системную переменную PATH вручную.
+
+**Проверьте установку:**
+```
+magick -version
+```
+### Настройки окружения
+
+Создайте файл .env в корне проекта и укажите в нём:
+```
+OPENAI_API_KEY==your-secret-key
+```
