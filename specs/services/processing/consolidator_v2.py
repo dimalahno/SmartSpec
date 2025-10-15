@@ -87,3 +87,11 @@ class ConsolidatorV2:
         df = self._normalize_text(df)
         # df = self._consolidate(df)
         return df
+
+# if __name__ == "__main__":
+#     file_path = "../../../media/uploads/test_data.txt"
+#     with open(file_path, "r", encoding="utf-8") as f:
+#         csv_tables = [f.read()]
+#
+#     consolidator = ConsolidatorV2()
+#     df = consolidator.merge_and_consolidate(csv_tables)

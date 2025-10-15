@@ -32,20 +32,6 @@ class JpgParser:
         if self.input_file.suffix.lower() not in (".jpg", ".jpeg"):
             raise ValueError(f"Unsupported image type: {self.input_file.suffix}")
 
-        # Промпт, используемый для каждой части
-        self.question = """
-Ты видишь часть таблицы. Извлеки ВСЕ строки именно из этой части.
-Формат ответа строго markdown-таблица:
-
-| Название | Количество |
-|----------|-------------|
-| ...      | ...         |
-
-❗ Правила:
-- Никакого текста до или после таблицы
-- В колонке 'Количество' только число (без 'шт.')
-"""
-
     def parse(self) -> str:
         """
         Основной метод: обрабатывает изображение (режет -> GPT -> парсинг -> CSV).
@@ -53,42 +39,10 @@ class JpgParser:
         logger.info(f"Extracting table from image: {self.input_file}")
 
         image = Image.open(self.input_file).convert("RGB")
-        width, height = image.size
-
-        # Режем на 3 части
-        parts = [
-            image.crop((0, 0, width, height // 3)),
-            image.crop((0, height // 3, width, 2 * height // 3)),
-            image.crop((0, 2 * height // 3, width, height)),
-        ]
-
-        all_rows = []
 
         image_64 = self._encode_image(image)
         response_text = self.ai.extract_table_from_image_b64(image_b64=image_64)
-
-        for part in parts:
-            img_b64 = self._encode_image(part)
-
-            response_text = self.ai.send_image_and_get_text(
-                prompt=self.question,
-                image_b64=img_b64
-            )
-            rows = self._parse_markdown_table(response_text)
-            if rows:
-                all_rows.extend(rows)
-
-        if not all_rows:
-            logger.warning("No data extracted from any image fragment.")
-            return ""
-
-        # Преобразуем в DataFrame
-        df = pd.DataFrame(all_rows, columns=["Название", "Количество"])
-        df["Количество"] = pd.to_numeric(df["Количество"], errors="coerce").fillna(0).astype(int)
-        df = df.groupby("Название", as_index=False)["Количество"].sum()
-
-        # Возвращаем CSV (как у других парсеров)
-        return df.to_csv(index=False, sep=";", encoding="utf-8-sig")
+        return response_text
 
     # --- Внутренние методы ---
 
