@@ -1,11 +1,13 @@
 import base64
 import os
-from openai import OpenAI
+
 from dotenv import load_dotenv
+from openai import OpenAI
 
 from specs.services.ai.prompts import SYSTEM_PROMPT
 
 load_dotenv()
+
 
 class AIHelper:
     def __init__(self, model: str = "gpt-5-mini"):
@@ -13,8 +15,16 @@ class AIHelper:
         if not api_key:
             raise ValueError("OPENAI_API_KEY не найден. Проверьте .env файл.")
         self.client = OpenAI(api_key=api_key)
-        self.system_prompt = SYSTEM_PROMPT
         self.model = model
+        self.system_prompt = {
+            "role": "system",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": SYSTEM_PROMPT
+                }
+            ]
+        }
 
     def extract_table_from_image(self, image_path: str) -> str:
         """
@@ -27,15 +37,7 @@ class AIHelper:
         response = self.client.responses.create(
             model=self.model,
             input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": self.system_prompt
-                        }
-                    ]
-                },
+                self.system_prompt,
                 {
                     "role": "user",
                     "content": [
@@ -64,15 +66,7 @@ class AIHelper:
         response = self.client.responses.create(
             model=self.model,
             input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": self.system_prompt
-                        }
-                    ]
-                },
+                self.system_prompt,
                 {
                     "role": "user",
                     "content": [
@@ -96,15 +90,7 @@ class AIHelper:
         response = self.client.responses.create(
             model=self.model,
             input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {
-                            "type": "input_text",
-                            "text": self.system_prompt
-                        }
-                    ]
-                },
+                self.system_prompt,
                 {
                     "role": "user",
                     "content": [
@@ -126,12 +112,7 @@ class AIHelper:
         response = self.client.responses.create(
             model=self.model,
             input=[
-                {
-                    "role": "system",
-                    "content": [
-                        {"type": "input_text", "text": self.system_prompt}
-                    ]
-                },
+                self.system_prompt,
                 {
                     "role": "user",
                     "content": [
@@ -144,3 +125,26 @@ class AIHelper:
             ]
         )
         return response.output_text
+
+    def send_image_and_get_text(self, prompt: str, image_b64: str) -> str:
+        """
+        Отправляет base64-картинку + prompt.
+        Возвращает сырой ответ от модели (текст).
+        """
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                self.system_prompt,
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}
+                        }
+                    ]
+                }
+            ]
+        )
+        return response.choices[0].message.content.strip()

@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from specs.services.parser.docx_parser import DocxParser
 from specs.services.parser.excel_parser import ExcelParser
+from specs.services.parser.jpg_parser import JpgParser
 from specs.services.parser.pdf_parser import PDFParser
 from specs.services.parser.txt_parser import TxtParser
 from specs.services.processing.consolidator_v2 import ConsolidatorV2
@@ -45,6 +46,9 @@ def index(request):
                 csv_tables = [parser.normalize()]
             elif ext == ".pdf":
                 parser = PDFParser(file_path)
+                csv_tables = [parser.parse()]
+            elif ext in [".jpg", ".jpeg"]:
+                parser = JpgParser(file_path)
                 csv_tables = [parser.parse()]
             else:
                 raise ValueError(f"Unsupported file type: {ext}")
