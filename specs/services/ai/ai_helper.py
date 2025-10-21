@@ -1,6 +1,7 @@
 import base64
 import os
 
+import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -61,6 +62,17 @@ class AIHelper:
         """
         Отправляет текстовую таблицу в GPT для нормализации к шаблону (CSV).
         """
+
+        try:
+            r = httpx.get(
+                "https://api.openai.com/v1/models",
+                headers={"Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}"},
+                timeout=10
+            )
+            print("OpenAI connectivity test:", r.status_code, r.text[:100])
+        except Exception as e:
+            print("Connectivity error:", e)
+
         table_text = "\n".join([";".join(row) for row in table])
 
         response = self.client.responses.create(
