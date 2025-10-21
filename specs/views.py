@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from django.conf import settings
 from django.shortcuts import render
@@ -21,7 +22,7 @@ def index(request):
     if request.method == 'POST' and request.FILES.get('specfile'):
         uploaded_file = request.FILES['specfile']
 
-        # 1. сохраняем загруженный файл
+        # === 1. Сохраняем файл ===
         upload_dir = os.path.join(settings.MEDIA_ROOT, "uploads")
         os.makedirs(upload_dir, exist_ok=True)
 
@@ -31,7 +32,7 @@ def index(request):
                 dest.write(chunk)
 
         try:
-            # 2. Определяем тип файла и парсим
+            # === 2. Определяем расширение ===
             ext = os.path.splitext(file_path)[1].lower()
 
             if ext == ".docx":
@@ -53,11 +54,11 @@ def index(request):
             else:
                 raise ValueError(f"Unsupported file type: {ext}")
 
-            # 3. объединяем и сохраняем результат
+            # === 3. Консолидация ===
             consolidator = ConsolidatorV2()
             df = consolidator.merge_and_consolidate(csv_tables)
 
-            # 4. Генерируем HTML-таблицу
+            # === 4. Генерация HTML и Excel ===
             table_html = df.to_html(classes="table table-striped table-bordered", index=False)
 
             output_dir = os.path.join(settings.MEDIA_ROOT, "output")
@@ -67,16 +68,23 @@ def index(request):
             output_path = os.path.join(output_dir, f"{base_name}_consolidated.xlsx")
             save_final_dataframe_xlsx(df, output_path)
 
-            # 5. Готовим ссылку для скачивания
+            # === 5. Ссылка для скачивания ===
             result_file_url = os.path.relpath(output_path, settings.MEDIA_ROOT)
             result_file_url = settings.MEDIA_URL + result_file_url.replace("\\", "/")
 
             message = f"Файл {uploaded_file.name} успешно обработан!"
 
         except Exception as e:
-            message = f"Ошибка при обработке: {str(e)}"
+            print("❌ Ошибка при обработке файла:", e)
+            traceback.print_exc()
 
-    # При GET-запросе — ничего не передаём
+            # fallback, если зависание из-за AI
+            if "openai" in str(e).lower() or "httpx" in str(e).lower():
+                message = "⚠️ Ошибка соединения с AI. Попробуйте позже или проверьте API-ключ."
+            else:
+                message = f"Ошибка при обработке: {str(e)}"
+
+    # === GET-запрос ===
     elif request.method == 'GET':
         uploaded_file = None
         message = None
