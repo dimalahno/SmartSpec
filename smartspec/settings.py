@@ -76,6 +76,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://smartspec-production.up.railway.app',
+]
+
 # --- Интернационализация ---
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'UTC'
