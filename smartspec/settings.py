@@ -5,6 +5,8 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+print("DEBUG OPENAI KEY PRESENT:", bool(os.getenv("OPENAI_API_KEY")))
+
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'cj&qz65hodc5zfk!m5nbpu9jdnv4in*t!)c6)n=!s5uiba85nx')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [
