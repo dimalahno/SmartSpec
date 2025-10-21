@@ -7,7 +7,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'cj&qz65hodc5zfk!m5nbpu9jdnv4in*t!)c6)n=!s5uiba85nx')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    os.environ.get('RAILWAY_STATIC_URL', '').replace('https://', '').replace('/', ''),
+    os.environ.get('RAILWAY_PUBLIC_DOMAIN', ''),
+    'smartspec-production.up.railway.app',
+]
 
 # --- Приложения ---
 INSTALLED_APPS = [
